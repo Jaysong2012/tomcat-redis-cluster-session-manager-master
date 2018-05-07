@@ -1,0 +1,82 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>tomcat-redis-cluster-session-manager</groupId>
+    <artifactId>tomcat-redis-cluster-session-manager</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <name>tomcat-redis-cluster-session-manager</name>
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-catalina -->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-catalina</artifactId>
+            <version>8.5.28</version>
+        </dependency>
+
+        <!-- For local development -->
+        <!-- <dependency>
+            <groupId>apache-tomcat</groupId>
+            <artifactId>catalina</artifactId>
+            <version>apache-tomcat-8.5.25</version>
+        </dependency>
+        <dependency>
+            <groupId>apache-tomcat</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>apache-tomcat-8.5.20</version>
+        </dependency>
+        <dependency>
+            <groupId>apache-tomcat</groupId>
+            <artifactId>tomcat-api</artifactId>
+            <version>apache-tomcat-8.5.20</version>
+        </dependency> -->
+        <!-- For local development end.. -->
+    </dependencies>
+
+    <build>
+       <finalName>trcsm</finalName>
+        <plugins>
+            <plugin>
+                 <groupId>org.apache.maven.plugins</groupId>
+                 <artifactId>maven-compiler-plugin</artifactId>
+                 <version>3.5</version>
+                 <configuration>
+                      <source>1.8</source>
+                      <target>1.8</target>
+                      <compiler>1.8</compiler>
+                 </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

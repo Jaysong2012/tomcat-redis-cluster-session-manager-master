@@ -1,0 +1,88 @@
+本次演示以一台机器启动6个Redis,多台机器原理一致
+cd /usr/local/
+mkdir redis
+cd redis/
+
+wget http://download.redis.io/releases/redis-4.0.9.tar.gz
+
+tar xzf redis-4.0.9.tar.gz
+
+cd redis-4.0.9/
+
+make && make install PREFIX=/usr/local/redis
+
+或者进入cd redis-4.0.9/src
+make && make install PREFIX=/usr/local/redis
+
+
+搭建集群目录
+cd /usr/local/redis/
+ mkdir -p /usr/local/redis/redis_cluster/7000
+ mkdir -p /usr/local/redis/redis_cluster/7001
+ mkdir -p /usr/local/redis/redis_cluster/7002
+ mkdir -p /usr/local/redis/redis_cluster/7003
+ mkdir -p /usr/local/redis/redis_cluster/7004
+ mkdir -p /usr/local/redis/redis_cluster/7005
+
+复制对应的redis.conf  到集群目录
+cp /usr/local/redis/redis.conf /usr/local/redis/redis_cluster/7000
+cp /usr/local/redis/redis.conf /usr/local/redis/redis_cluster/7001
+cp /usr/local/redis/redis.conf /usr/local/redis/redis_cluster/7002
+cp /usr/local/redis/redis.conf /usr/local/redis/redis_cluster/7003
+cp /usr/local/redis/redis.conf /usr/local/redis/redis_cluster/7004
+cp /usr/local/redis/redis.conf /usr/local/redis/redis_cluster/7005
+
+如果/usr/local/redis/下没有redis.conf  则cp  /usr/local/redis/redis-4.0.9/redis.conf  /usr/local/redis
+
+对应集群目录下编辑config
+vim /usr/local/redis/redis_cluster/7000/redis.conf
+
+切记：不能设置密码，否则集群启动时会连接不上
+
+port  7000                                //端口根据对应的文件夹去配制端口 7000,7001,7002,7003,7004,7005      
+bind 本机ip                               //根据本机所在的IP或hostname去配制 node1 node2 node3
+daemonize    yes                          //redis后台运行
+pidfile  /var/run/redis_7000.pid          //pidfile文件对应7000,7001,7002,7003,7004,7005
+cluster-enabled  yes                      //开启集群  把注释#去掉
+cluster-config-file  nodes_7000.conf      //集群的配置  配置文件首次启动自动生成 7000,7001,7002,7003,7004,7005
+cluster-node-timeout  15000               //请求超时  默认15秒，可自行设置
+appendonly  yes                           //aof日志开启  有需要就开启，它会每次写操作都记录一条日志
+#bind 127.0.0.1
+bind 106.14.20.45
+protected-mode yes
+
+# Accept connections on the specified port, default is 6379 (IANA #815344).
+# If port 0 is specified Redis will not listen on a TCP socket.
+port 7001
+
+# By default Redis does not run as a daemon. Use 'yes' if you need it.
+# Note that Redis will write a pid file in /var/run/redis.pid when daemonized.
+daemonize yes
+
+# Creating a pid file is best effort: if Redis is not able to create it
+# nothing bad happens, the server will start and run normally.
+pidfile /var/run/redis_7001.pid
+
+
+
+ruby  集群搭建
+
+cp /usr/local/redis/redis-4.0.9/src/redis-trib.rb /usr/local/redis/bin/
+
+apt-get install ruby
+
+wget https://rubygems.org/downloads/redis-4.0.0.rc1.gem
+gem install -l ./redis-4.0.0.rc1.gem
+
+启动对应Redis
+/usr/local/redis/bin/redis-server /usr/local/redis/redis_cluster/7000/redis.conf
+/usr/local/redis/bin/redis-server /usr/local/redis/redis_cluster/7001/redis.conf
+/usr/local/redis/bin/redis-server /usr/local/redis/redis_cluster/7002/redis.conf
+/usr/local/redis/bin/redis-server /usr/local/redis/redis_cluster/7003/redis.conf
+/usr/local/redis/bin/redis-server /usr/local/redis/redis_cluster/7004/redis.conf
+/usr/local/redis/bin/redis-server /usr/local/redis/redis_cluster/7005/redis.conf
+
+./usr/local/redis/bin/redis-trib.rb  create  --replicas  1  106.14.20.45:7000 106.14.20.45:7001  106.14.20.45:7002  106.14.20.45:7003  106.14.20.45:7004  106.14.20.45:7005
+
+进入对应客户端
+./bin/redis-cli -h 106.14.20.45 -p 7003 -c
