@@ -28,6 +28,8 @@ redis.cluster.enabled=true
 Move Your edited redis-data-cache.properties file and move the file to tomcat/conf directory  
 * tomcat/conf/redis-data-cache.properties  
 
-Add the below two lines in tomcat/conf/context.xml  
-<Valve className="tomcat.request.session.redis.SessionHandlerValve" />  
-<Manager className="tomcat.request.session.redis.SessionManager" />  
+Add the below two lines in tomcat/conf/context.xml 
+
+
+    <Valve className="tomcat.request.session.redis.SessionHandlerValve" />
+    <Manager className="tomcat.request.session.redis.SessionManager" />
